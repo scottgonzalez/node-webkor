@@ -1,12 +1,8 @@
-var sys = require('sys');
+var posix = require('posix');
 
 var template = {
-	read: function(path, complete) {
-		sys.exec('cat ' + path).addCallback(complete);
-	},
-	
 	parse: function(path, data, complete) {
-		template.read(path, function(content) {
+		posix.cat(path).addCallback(function(content) {
 			complete(content.replace(/{([^}]+)}/g, function(match, name) {
 				return name in data ? data[name] : '';
 			}));
