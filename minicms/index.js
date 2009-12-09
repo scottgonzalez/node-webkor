@@ -6,18 +6,18 @@ var sys = require('sys'),
 var minicms = {
 	init: function(config) {
 		// TODO: make paths relative to the same dir
-		minicms.config = process.mixin({
+		this.config = process.mixin({
 			port: 8000,
 			templatePath: './template',
 			controllerPath: '../controller'
 		}, config);
 
-		minicms.run();
+		this.run();
 	},
 
 	run: function() {
-		var controllerPath = minicms.config.controllerPath,
-			templatePath = minicms.config.templatePath;
+		var controllerPath = this.config.controllerPath,
+			templatePath = this.config.templatePath;
 
 		http.createServer(function(request, response) {
 			try {
@@ -37,11 +37,11 @@ var minicms = {
 					response.finish();
 				});
 			});
-		}).listen(minicms.config.port);
+		}).listen(this.config.port);
 
-		sys.puts('minicms running at http://127.0.0.1:' + minicms.config.port + '/');
+		sys.puts('minicms running at http://127.0.0.1:' + this.config.port + '/');
 	}
 };
 
-exports.minicms = minicms.init;
+exports.minicms = function() { minicms.init.apply(minicms, arguments); };
 
