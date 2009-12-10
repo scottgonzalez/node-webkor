@@ -1,7 +1,7 @@
 var sys = require('sys'),
 	http = require('http'),
 	Controller = require('./controller').Controller,
-	templateParser = require('./template').parse;
+	templateParser = require('./templateParser/basic').parser;
 
 var minicms = {
 	init: function(config) {
@@ -32,7 +32,8 @@ var minicms = {
 			response.sendHeader(200, {'Content-Type': 'text/plain'});
 			controller = new Controller(controller);
 			controller.exec(request.uri.params).addCallback(function(template, data) {
-				templateParser(templatePath + template, data, function(content) {
+				var parser = new templateParser();
+				parser.exec(templatePath + template, data).addCallback(function(content) {
 					response.sendBody(content);
 					response.finish();
 				});
