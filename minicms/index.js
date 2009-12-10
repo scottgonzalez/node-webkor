@@ -32,8 +32,7 @@ var minicms = {
 			response.sendHeader(200, {'Content-Type': 'text/plain'});
 			controller = new Controller(controller);
 			controller.exec(request.uri.params).addCallback(function(template, data) {
-				var parser = new templateParser();
-				parser.exec(templatePath + template, data).addCallback(function(content) {
+				templateParser.exec(templatePath + template, data).addCallback(function(content) {
 					response.sendBody(content);
 					response.finish();
 				});
