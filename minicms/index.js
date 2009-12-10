@@ -1,6 +1,7 @@
 var sys = require('sys'),
 	http = require('http'),
 	Controller = require('./controller').Controller,
+	// TODO: add a config value for which template parser to use
 	templateParser = require('./templateParser/basic').parser;
 
 var minicms = {
