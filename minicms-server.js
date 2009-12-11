@@ -1,1 +1,1 @@
-require('./minicms').minicms();
+require('./lib/minicms').minicms();
