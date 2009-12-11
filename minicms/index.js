@@ -7,14 +7,14 @@ var minicms = {
 		this.config = process.mixin({
 			port: 8000,
 			controllerType: 'basic',
+			// TODO: actually use this setting
 			controllerPath: '../controller',
 			templateType: 'basic',
 			templatePath: './template'
 		}, config);
 
 		this.templateParser = require('./templateParser/' + this.config.templateType).parser;
-		// TODO: allow various controller systems
-		this.baseController = require('./controller').Controller;
+		this.Controller = require('./controller/' + this.config.controllerType).Controller;
 
 		this.run();
 	},
@@ -25,9 +25,7 @@ var minicms = {
 
 		http.createServer(function(request, response) {
 			try {
-				//var controller = Controller.load(request);
-				var controller = require(controllerPath + request.uri.path).controller;
-				controller = new minicms.baseController(controller);
+				var controller = minicms.Controller.load(request);
 			} catch (e) {
 				response.sendHeader(404, {'Content-Type': 'text/plain'});
 				response.sendBody('Page Not Found\n');
