@@ -1,17 +1,20 @@
 var sys = require('sys'),
-	http = require('http'),
-	Controller = require('./controller').Controller,
-	// TODO: add a config value for which template parser to use
-	templateParser = require('./templateParser/basic').parser;
+	http = require('http');
 
 var minicms = {
 	init: function(config) {
 		// TODO: make paths relative to the same dir
 		this.config = process.mixin({
 			port: 8000,
-			templatePath: './template',
-			controllerPath: '../controller'
+			controllerType: 'basic',
+			controllerPath: '../controller',
+			templateType: 'basic',
+			templatePath: './template'
 		}, config);
+
+		this.templateParser = require('./templateParser/' + this.config.templateType).parser;
+		// TODO: allow various controller systems
+		this.baseController = require('./controller').Controller;
 
 		this.run();
 	},
@@ -22,7 +25,9 @@ var minicms = {
 
 		http.createServer(function(request, response) {
 			try {
+				//var controller = Controller.load(request);
 				var controller = require(controllerPath + request.uri.path).controller;
+				controller = new minicms.baseController(controller);
 			} catch (e) {
 				response.sendHeader(404, {'Content-Type': 'text/plain'});
 				response.sendBody('Page Not Found\n');
@@ -31,9 +36,8 @@ var minicms = {
 			}
 
 			response.sendHeader(200, {'Content-Type': 'text/plain'});
-			controller = new Controller(controller);
 			controller.exec(request.uri.params).addCallback(function(template, data) {
-				templateParser.exec(templatePath + template, data).addCallback(function(content) {
+				minicms.templateParser.exec(templatePath + template, data).addCallback(function(content) {
 					response.sendBody(content);
 					response.finish();
 				});
