@@ -1,4 +1,5 @@
+var basePath = require('path').dirname(__filename);
 require('../lib/webkor').webkor({
-	controllerPath: '../demo/controller',
-	templatePath: '../demo/template'
+	controllerPath: basePath + '/controller',
+	templatePath: basePath + '/template'
 });
